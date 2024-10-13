@@ -1,100 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-		{% load static %}
-		<link rel="stylesheet" href="{% static 'css/main.css' %}" />
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-			integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-			crossorigin="anonymous"
-			referrerpolicy="no-referrer" />
-	</head>
-	<body>
-		<h1>Expense Tracker</h1>
-		<div class="container">
-			<div class="header">
-				<img src="https://i.ibb.co/jfScDTC/budget.png" alt="Expense Tracker" />
-				<div class="balance-container">
-					<h2>Your Balance</h2>
-					<h2 id="balance" class="balance">{{currentBalance}}</h2>
-				</div>
-			</div>
-			<div class="inc-exp-container">
-				<div>
-					<h4>Income</h4>
-					<p id="money-plus" class="money plus">{{creditedAmount}}</p>
-				</div>
-				<div>
-					<h4>Expenses</h4>
-					<p id="money-minus" class="money minus">{{debitedAmount}}</p>
-				</div>
-			</div>
-			<h3>History</h3>
-			<ul id="list" class="list">
-				{% if transactions|length > 0 %} {% for transaction in transactions %}
-				<li
-					class="{% if transaction.expense_type == 'DEBIT' %} minus {% else %} plus {% endif %}">
-					{{transaction.description}} <span>{{transaction.amount}}</span>
+{% extends "base.html" %} {% block start %}
 
-					<a
-						href="{% url 'removeTransaction' transaction.id%}"
-						class="delete-btn">
-						<i class="fa fa-trash" aria-hidden="true"></i>
-					</a>
-				</li>
-				{% endfor %} {%else%}
-				<h3>currently, you have not transaction</h3>
-				{%endif%}
-			</ul>
+<h1 class="text-3xl font-bold text-center my-6">Expense Tracker</h1>
 
-			<h3>Add new transaction</h3>
-
-			<form method="POST" id="form">
-				{% csrf_token %}
-				<div class="form-control">
-					<label for="text">Description</label>
-					<input
-						type="text"
-						name="description"
-						id="text"
-						placeholder="Enter description..." />
-				</div>
-				<div class="form-control">
-					<label for="amount"
-						>Amount <br />
-						<small>(-100 = expense, 100 = income)</small></label
-					>
-					<input
-						type="number"
-						name="amount"
-						id="amount"
-						placeholder="Enter amount..." />
-				</div>
-				<button class="btn" type="submit">Add transaction</button>
-			</form>
+<div class="container mx-auto px-4">
+	<a
+		href="{% url 'logout_view' %}"
+		class="btn bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition inline-block mb-4 pointer"
+		>logout</a
+	>
+	{{request.usery}}
+	<div class="header flex items-center mb-6">
+		<img
+			src="https://i.ibb.co/jfScDTC/budget.png"
+			alt="Expense Tracker"
+			class="w-24 h-24 mb-4" />
+		<div class="balance-container text-center">
+			<h2 class="text-lg font-semibold">Your Balance</h2>
+			<h2 id="balance" class="text-2xl font-bold text-green-600">
+				{{ currentBalance }}
+			</h2>
 		</div>
-		    <!-- Notification -->
-			<div class="notification-container" id="notification">
-				{% if messages %}
-				<ul class="messages">
-					{% for message in messages %}
-					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-						{{ message }}
-					</li>
-					{% endfor %}
-				</ul>
-				{% endif %}
-			</div>
-			
-			<script>
-				// Optional: Display alerts for messages in JavaScript
-				{% for message in messages %}
-				alert("{{ message }}");
-				{% endfor %}
-			</script>
-	</body>
-</html>
+	</div>
+	<div class="inc-exp-container flex justify-between mb-6">
+		<div class="income w-1/2 bg-green-100 p-4 rounded shadow">
+			<h4 class="font-semibold">Income</h4>
+			<p id="money-plus" class="money plus text-green-600 font-bold">
+				{{ creditedAmount }}
+			</p>
+		</div>
+		<div class="expenses w-1/2 bg-red-100 p-4 rounded shadow">
+			<h4 class="font-semibold">Expenses</h4>
+			<p id="money-minus" class="money minus text-red-600 font-bold">
+				{{ debitedAmount }}
+			</p>
+		</div>
+	</div>
+	<h3 class="text-lg font-semibold mb-2">History</h3>
+	<ul id="list" class="list bg-white shadow rounded">
+		{% if transactions|length > 0 %} {% for transaction in transactions %}
+		<li
+			class="flex justify-between p-4 border-b {% if transaction.expense_type == 'DEBIT' %} bg-red-100 {% else %} bg-green-100 {% endif %}">
+			<span>{{ transaction.description }}</span>
+			<span>{{ transaction.amount }}</span>
+			<a
+				href="{% url 'removeTransaction' transaction.id %}"
+				class="delete-btn text-red-600 hover:text-red-800">
+				<i class="fa fa-trash" aria-hidden="true"></i>
+			</a>
+		</li>
+		{% endfor %} {% else %}
+		<li class="p-4 text-gray-600">
+			Currently, you have not made any transactions
+		</li>
+		{% endif %}
+	</ul>
+
+	<h3 class="text-lg font-semibold mt-6">Add New Transaction</h3>
+
+	<form method="POST" id="form" class="mt-4 bg-gray-100 p-4 rounded shadow">
+		{% csrf_token %}
+		<div class="form-control mb-4">
+			<label for="text" class="block mb-2">Description</label>
+			<input
+				type="text"
+				name="description"
+				id="text"
+				placeholder="Enter description..."
+				class="w-full p-2 border border-gray-300 rounded" />
+		</div>
+		<div class="form-control mb-4">
+			<label for="amount" class="block mb-2">
+				Amount <br />
+				<small class="text-gray-500"
+					>(e.g., -100 = expense, 100 = income)</small
+				>
+			</label>
+			<input
+				type="number"
+				name="amount"
+				id="amount"
+				placeholder="Enter amount..."
+				class="w-full p-2 border border-gray-300 rounded" />
+		</div>
+		<button
+			class="btn bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
+			type="submit">
+			Add Transaction
+		</button>
+	</form>
+</div>
+<!-- Notification -->
+<div class="notification-container" id="notification"></div>
+{% endblock %}

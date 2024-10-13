@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block start %}
+
+<div class="p-10">
+	<form method="POST">
+		{% csrf_token %}
+		<input type="text" name="name" id="" placeholder="name" />
+		<input type="number" name="age" id="" , placeholder="age" />
+		<button>submit</button>
+	</form>
+</div>
+
+{% endblock %}
