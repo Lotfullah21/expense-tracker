@@ -2,8 +2,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-
-
     
 class Contact(models.Model):
     name = models.CharField(max_length = 123)  
@@ -29,7 +27,6 @@ class TrackingExpenses(models.Model):
     
     def __str__(self):
         return f"item {self.description} - with price =  {self.current_balance}"
-    
     
 class RequestLogs(models.Model):
     request_info = models.TextField()

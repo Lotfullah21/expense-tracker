@@ -19,8 +19,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    
     'expenses',
+    # "accounts",
+    'hooshmand',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# For telling django to use our custom user instead of default one.
 # AUTH_USER_MODEL = 'accounts.CustomUser'
 
 MIDDLEWARE = [
@@ -41,7 +43,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'expense_tracker.middleware.RequestMiddleWare.RequestMiddleWareLogin',
-     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 

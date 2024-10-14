@@ -3,12 +3,10 @@ from .models import TrackingExpenses, CurrentBalance, Contact
 from django.contrib import messages  
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_page
+
 # Create your views here.
-
-
 def contact(request):
     if request.method=="POST":
         name= request.POST.get("name")
@@ -27,15 +25,15 @@ def login_view(request):
             messages.error(request,"User does not exist, please register first")
             return redirect("register_view")
         user = authenticate(username=user_name, password=password)
-        print(user)
         if not user:
             messages.error(request,"Incorrect password, try again")
             return redirect("login_view")
+        # Now user is authenticated, login it.
         login(request,user)
-        return redirect("/")
-    
+        return redirect("index")
     return render(request, "login.html")
 
+# logout
 def logout_view(request):
     logout(request)
     return redirect("login_view")
@@ -47,7 +45,6 @@ def register_view(request):
         first_name= request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         password = request.POST.get("password")
-        
         user = User.objects.filter(username=user_name)
         if user.exists():
             messages.error(request,"User already existed")
